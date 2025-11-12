@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Go Chat Test</title>
+  <style>
+    body { font-family: sans-serif; }
+    #messages { border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h2>💬 Go WebSocket Chat</h2>
+
+  <div id="messages"></div>
+  <input id="msgInput" placeholder="Type message..." />
+  <button id="sendBtn">Send</button>
+
+  <script>
+    const socket = new WebSocket("ws://localhost:8080/ws");
+
+    
+    socket.addEventListener("open", () => {
+      console.log("✅ Connected to Go server");
+    });
+    socket.addEventListener("message", (event) => {
+      const messagesDiv = document.getElementById("messages");
+      const msg = document.createElement("div");
+      msg.textContent = event.data; 
+      messagesDiv.appendChild(msg);
+    });
+
+    document.getElementById("sendBtn").addEventListener("click", () => {
+      const input = document.getElementById("msgInput");
+      const text = input.value.trim();
+      if (text !== "") {
+        socket.send(text);
+        input.value = "";
+      }
+    });
+  </script>
+</body>
+</html>
